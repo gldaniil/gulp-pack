@@ -6,6 +6,26 @@ const uglify = require("gulp-uglify-es").default; // Минификация
 const browserSync = require("browser-sync").create(); // Разработка в реальном времени
 const autoprefixer = require("gulp-autoprefixer"); // Поддержка свойств в старых браузерах
 const clean = require("gulp-clean"); // Удаление файлов и папок
+const avif = require("gulp-avif"); // Конвертация изображений в .avif
+const webp = require("gulp-webp"); // Конвертация изображений в .webp
+const imagemin = require("gulp-imagemin"); // Конвертация изображений в .jpg
+const newer = require("gulp-newer"); // "Кэш" изображений
+
+function images() {
+  return src(["src/images/src/*.*", "!src/images/src/*.svg"])
+    .pipe(newer("src/images/dist"))
+    .pipe(avif({ quality: 50 }))
+
+    .pipe(src("src/images/src/*.*"))
+    .pipe(newer("src/images/dist"))
+    .pipe(webp())
+
+    .pipe(src("src/images/src/*.*"))
+    .pipe(newer("src/images/dist"))
+    .pipe(imagemin())
+
+    .pipe(dest("src/images/dist"));
+}
 
 function scripts() {
   return src([
@@ -29,17 +49,15 @@ function styles() {
 }
 
 function watching() {
-  watch(["src/scss/style.scss"], styles);
-  watch(["src/js/main.js"], scripts);
-  watch(["src/**/*.html"]).on("change", browserSync.reload);
-}
-
-function browsersync() {
   browserSync.init({
     server: {
       baseDir: "src/",
     },
   });
+  watch(["src/scss/style.scss"], styles);
+  watch(["src/images/src"], images);
+  watch(["src/js/main.js"], scripts);
+  watch(["src/**/*.html"]).on("change", browserSync.reload);
 }
 
 function cleanDist() {
@@ -47,15 +65,23 @@ function cleanDist() {
 }
 
 function building() {
-  return src(["src/css/style.min.css", "src/js/main.min.js", "src/**/*.html"], {
-    base: "src",
-  }).pipe(dest("dist"));
+  return src(
+    [
+      "src/css/style.min.css",
+      "src/images/dist/*.*",
+      "src/js/main.min.js",
+      "src/**/*.html",
+    ],
+    {
+      base: "src",
+    }
+  ).pipe(dest("dist"));
 }
 
 exports.styles = styles;
+exports.images = images;
 exports.scripts = scripts;
 exports.watching = watching;
-exports.browsersync = browsersync;
 
 exports.build = parallel(clean, building);
-exports.default = parallel(styles, scripts, browsersync, watching);
+exports.default = parallel(styles, scripts, watching);
