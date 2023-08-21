@@ -13,6 +13,18 @@ const svgSprite = require("gulp-svg-sprite"); // Работа с svg
 const newer = require("gulp-newer"); // "Кэш" изображений
 const fonter = require("gulp-fonter"); // Преобразование .ttf в .woff2
 const ttf2woff2 = require("gulp-ttf2woff2"); // Преобразование .ttf в .woff2
+const include = require("gulp-include");
+
+function pages() {
+  return src("src/pages/*.html")
+    .pipe(
+      include({
+        includePaths: "src/components",
+      })
+    )
+    .pipe(dest("src"))
+    .pipe(browserSync.stream());
+}
 
 function fonts() {
   return src("src/fonts/src/*.*")
@@ -87,7 +99,8 @@ function watching() {
   watch(["src/scss/style.scss"], styles);
   watch(["src/images/src"], images);
   watch(["src/js/main.js"], scripts);
-  watch(["src/**/*.html"]).on("change", browserSync.reload);
+  watch(["src/components/*", "src/pages/*"], pages);
+  watch(["src/*.html"]).on("change", browserSync.reload);
 }
 
 function cleanDist() {
@@ -114,10 +127,11 @@ function building() {
 exports.styles = styles;
 exports.images = images;
 exports.fonts = fonts;
+exports.pages = pages;
 exports.sprite = sprite;
 exports.scripts = scripts;
 exports.watching = watching;
 exports.building = building;
 
-exports.build = parallel(clean, building);
-exports.default = parallel(styles, scripts, watching);
+exports.build = series(cleanDist, building);
+exports.default = parallel(styles, images, scripts, pages, watching);
