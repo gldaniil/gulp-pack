@@ -9,6 +9,7 @@ const clean = require("gulp-clean"); // Удаление файлов и пап�
 const avif = require("gulp-avif"); // Конвертация изображений в .avif
 const webp = require("gulp-webp"); // Конвертация изображений в .webp
 const imagemin = require("gulp-imagemin"); // Конвертация изображений в .jpg
+const svgSprite = require("gulp-svg-sprite"); // Работа с svg
 const newer = require("gulp-newer"); // "Кэш" изображений
 
 function images() {
@@ -24,6 +25,21 @@ function images() {
     .pipe(newer("src/images/dist"))
     .pipe(imagemin())
 
+    .pipe(dest("src/images/dist"));
+}
+
+function sprite() {
+  return src("src/images/dist/*.svg")
+    .pipe(
+      svgSprite({
+        mode: {
+          stack: {
+            sprite: "../sprite.svg",
+            example: true,
+          },
+        },
+      })
+    )
     .pipe(dest("src/images/dist"));
 }
 
@@ -80,6 +96,7 @@ function building() {
 
 exports.styles = styles;
 exports.images = images;
+exports.sprite = sprite;
 exports.scripts = scripts;
 exports.watching = watching;
 
