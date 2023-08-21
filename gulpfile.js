@@ -1,11 +1,11 @@
 const { src, dest, watch, parallel } = require("gulp");
 
-const scss = require("gulp-sass")(require("sass"));
-const concat = require("gulp-concat");
-const uglify = require("gulp-uglify-es").default;
-const browserSync = require("browser-sync").create();
-const autoprefixer = require("gulp-autoprefixer");
-const clean = require("gulp-clean");
+const scss = require("gulp-sass")(require("sass")); // Препроцессор SASS
+const concat = require("gulp-concat"); // Объединение файлов в один
+const uglify = require("gulp-uglify-es").default; // Минификация
+const browserSync = require("browser-sync").create(); // Разработка в реальном времени
+const autoprefixer = require("gulp-autoprefixer"); // Поддержка свойств в старых браузерах
+const clean = require("gulp-clean"); // Удаление файлов и папок
 
 function scripts() {
   return src([
