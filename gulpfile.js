@@ -40,22 +40,22 @@ function fonts() {
 
 function images() {
   return src(["src/images/src/*.*", "!src/images/src/*.svg"])
-    .pipe(newer("src/images/dist"))
+    .pipe(newer("src/images"))
     .pipe(avif({ quality: 50 }))
 
     .pipe(src("src/images/src/*.*"))
-    .pipe(newer("src/images/dist"))
+    .pipe(newer("src/images"))
     .pipe(webp())
 
     .pipe(src("src/images/src/*.*"))
-    .pipe(newer("src/images/dist"))
+    .pipe(newer("src/images"))
     .pipe(imagemin())
 
-    .pipe(dest("src/images/dist"));
+    .pipe(dest("src/images"));
 }
 
 function sprite() {
-  return src("src/images/dist/*.svg")
+  return src("src/images/*.svg")
     .pipe(
       svgSprite({
         mode: {
@@ -66,7 +66,7 @@ function sprite() {
         },
       })
     )
-    .pipe(dest("src/images/dist"));
+    .pipe(dest("src/images"));
 }
 
 function scripts() {
@@ -111,9 +111,9 @@ function building() {
   return src(
     [
       "src/css/style.min.css",
-      "src/images/dist/*.*",
-      "!src/images/dist/*.svg",
-      "src/images/dist/sprite.svg",
+      "src/images/*.*",
+      "!src/images/*.svg",
+      "src/images/sprite.svg",
       "src/fonts/*.*",
       "src/js/main.min.js",
       "src/**/*.html",
