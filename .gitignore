@@ -2,3 +2,5 @@ node_modules/
 *.min.*
 dist/
 src/images/src/*
+src/fonts/src/*.*
+src/fonts/*.*
