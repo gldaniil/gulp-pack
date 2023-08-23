@@ -14,6 +14,9 @@ const newer = require("gulp-newer"); // "Кэш" изображений
 const fonter = require("gulp-fonter"); // Преобразование .ttf в .woff2
 const ttf2woff2 = require("gulp-ttf2woff2"); // Преобразование .ttf в .woff2
 const include = require("gulp-include");
+const babel = require("gulp-babel");
+const hash = require("gulp-hash-filename");
+const rename = require("gulp-rename");
 
 function pages() {
   return src("src/pages/*.html")
@@ -75,7 +78,22 @@ function scripts() {
     "src/js/*.js",
     "!src/js/main.min.js", // ! - исключение файла
   ])
-    .pipe(concat("main.min.js"))
+    .pipe(
+      babel({
+        presets: ["@babel/preset-env"],
+      })
+    )
+    .pipe(concat("index.js"))
+    .pipe(
+      rename(function (path) {
+        path.basename += ".min";
+      })
+    )
+    .pipe(
+      hash({
+        format: "{name}.{hash:5}{size}{ext}",
+      })
+    )
     .pipe(uglify())
     .pipe(dest("src/js"))
     .pipe(browserSync.stream());
