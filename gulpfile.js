@@ -13,10 +13,10 @@ const svgSprite = require("gulp-svg-sprite"); // Работа с svg
 const newer = require("gulp-newer"); // "Кэш" изображений
 const fonter = require("gulp-fonter"); // Преобразование .ttf в .woff2
 const ttf2woff2 = require("gulp-ttf2woff2"); // Преобразование .ttf в .woff2
-const include = require("gulp-include");
-const babel = require("gulp-babel");
-const hash = require("gulp-hash-filename");
-const rename = require("gulp-rename");
+const include = require("gulp-include"); // Подключение файлов
+const babel = require("gulp-babel"); // Преобразование современного синтаксиса
+const hash = require("gulp-hash-filename"); // Хэш для переименования
+const rename = require("gulp-rename"); // Переименование файлов
 
 function pages() {
   return src("src/pages/*.html")
