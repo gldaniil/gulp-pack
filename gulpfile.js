@@ -72,6 +72,16 @@ function sprite() {
     .pipe(dest("src/images"));
 }
 
+function hashname() {
+  return src(["src/js/*.min.js"])
+    .pipe(
+      hash({
+        format: "{name}.{hash:5}{size}{ext}",
+      })
+    )
+    .pipe(dest("dist/js"));
+}
+
 function scripts() {
   return src([
     "src/js/main.js",
@@ -87,11 +97,6 @@ function scripts() {
     .pipe(
       rename(function (path) {
         path.basename += ".min";
-      })
-    )
-    .pipe(
-      hash({
-        format: "{name}.{hash:5}{size}{ext}",
       })
     )
     .pipe(uglify())
@@ -148,8 +153,9 @@ exports.fonts = fonts;
 exports.pages = pages;
 exports.sprite = sprite;
 exports.scripts = scripts;
+exports.hashname = hashname;
 exports.watching = watching;
 exports.building = building;
 
-exports.build = series(cleanDist, building);
+exports.build = series(cleanDist, hashname, building);
 exports.default = parallel(styles, images, scripts, pages, watching);
